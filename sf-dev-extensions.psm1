@@ -1,0 +1,18 @@
+$files = Get-ChildItem "$PSScriptRoot" -Filter "*.ps1" -Recurse
+$files | % { . $_.FullName }
+$functionNames = $files | Get-Content | % { $_.TrimStart() } | ? { $_.StartsWith("function") } |
+    % {
+        $_.Split(' ')[1]
+    }
+
+# $functionNames = $functionNames | ? { !$_.StartsWith("_") }
+
+$Script:registeredServices = @()
+if (!$Global:SfEvents_OnAfterProjectSelected) {$Global:SfEvents_OnAfterProjectSelected = @()}
+$Global:SfEvents_OnAfterProjectSelected += {
+    # s-utils-deploy
+}
+
+$script:sfDevExt = @{}
+
+Export-ModuleMember -Function $functionNames -Variable $script:sfDevExt
