@@ -30,7 +30,7 @@ function s-sitesync-sync {
 }
 
 function s-siteSync-install {
-    [SfProject]$target = sd-project-getCurrent
+    [SfProject]$source = sd-project-getCurrent
     $siteSyncTag = "SiteSync-$([Guid]::NewGuid().ToString().Split('-')[0])"
 
     # # check if not already setup
@@ -51,16 +51,16 @@ function s-siteSync-install {
     sd-project-clone -skipSourceControlMapping
 
     # setup the target
-    sd-project-rename -newName "$($target.displayName)_trg"
+    sd-project-rename -newName "$($source.displayName)_trg"
     sd-projectTags-addToCurrent $siteSyncTag
     s-sitesync-setupTarget
     sd-appStates-save -stateName "siteSyncInit"
     $targetUrl = sd-iisSite-getUrl
 
     # setup the source
-    sd-project-setCurrent -newContext $target
+    sd-project-setCurrent -newContext $source
     sd-projectTags-addToCurrent $siteSyncTag
-    sd-project-rename -newName "$($target.displayName)_src"
+    sd-project-rename -newName "$($source.displayName)_src"
     s-sitesync-setupSource -targetUrl $targetUrl
     sd-appStates-save -stateName "siteSyncInit"
 }

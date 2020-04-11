@@ -2,7 +2,7 @@
 using Telerik.Sitefinity.LoadBalancing.Configuration;
 using Telerik.Sitefinity.Services;
 
-namespace SitefinityWebApp.App_Code
+namespace SitefinityWebApp
 {
     public class NlbSetup
     {
@@ -14,19 +14,21 @@ namespace SitefinityWebApp.App_Code
             this.config = this.manager.GetSection<SystemConfig>();
         }
 
-        public void AddNode(string port)
+        public void AddNode(string addresses)
         {
-            var address = "http://localhost:" + port;
-            var urls = this.config.LoadBalancingConfig.URLS;
-            if (urls.Contains(address))
+            foreach (var address in addresses.Split(','))
             {
-                return;
-            }
+                var urls = this.config.LoadBalancingConfig.URLS;
+                if (urls.Contains(address))
+                {
+                    return;
+                }
 
-            urls.Add(new InstanceUrlConfigElement(urls)
-            {
-                Value = address
-            });
+                urls.Add(new InstanceUrlConfigElement(urls)
+                {
+                    Value = address
+                });
+            }
 
             this.SaveChanges();
         }
