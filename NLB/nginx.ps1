@@ -44,8 +44,8 @@ function _nginx-createNlbClusterConfig {
 
     $nlbDomain = _nlbTags-getDomain -tag $nlbTag
 
-    [SiteBinding]$firstNodeBinding = _bindings-getOrCreateLocalhostBinding -project $firstNode
-    [SiteBinding]$secondNodeBinding = _bindings-getOrCreateLocalhostBinding -project $secondNode
+    [SiteBinding]$firstNodeBinding = s-bindings-getOrCreateLocalhostBinding -project $firstNode
+    [SiteBinding]$secondNodeBinding = s-bindings-getOrCreateLocalhostBinding -project $secondNode
 
     $nlbPairConfig = "upstream $nlbClusterId {
     server localhost:$($firstNodeBinding.port);

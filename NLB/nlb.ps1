@@ -174,7 +174,7 @@ function _nlb-getNlbClusterUrls {
         $secondNode
     )
 
-    $firstNodeUrl = _bindings-getLocalhostUrl -websiteName $firstNode.websiteName
-    $secondNodeUrl = _bindings-getLocalhostUrl -websiteName $secondNode.websiteName
+    $firstNodeUrl = s-bindings-getLocalhostUrl -websiteName $firstNode.websiteName
+    $secondNodeUrl = s-bindings-getLocalhostUrl -websiteName $secondNode.websiteName
     "$firstNodeUrl,$secondNodeUrl"
 }
