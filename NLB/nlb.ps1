@@ -10,6 +10,27 @@ function s-nlb-setup {
     _nginx-createNewCluster $firstNode $secondNode
 }
 
+function s-nlb-uninstall {
+    $p = sd-project-getCurrent
+    if (!$p) {
+        throw 'No project selected.'
+    }
+
+    if (!(s-nlb-getStatus).enabled) {
+        throw 'No NLB setup.'
+    }
+
+    s-nlb-getOtherNodes | sd-project-remove -keepDb
+    
+    $nlbTag = _nlbTags-filterNlbTag $p.tags
+    
+    _s-nginx-removeCluster $nlbTag
+    
+    sd-projectTags-removeFromCurrent -tagName $nlbTag
+    s-settings-setSslOffload -flag $false
+    _s-execute-utilsRequest -typeName "NlbSetup" -methodName "RemoveAllNodes" > $null
+}
+
 function s-nlb-getOtherNodes {
     [SfProject]$p = sd-project-getCurrent
     if (!$p) {
@@ -23,7 +44,7 @@ function s-nlb-getOtherNodes {
 
     $result = sd-project-getAll | ? tags -Contains $tag | ? id -ne $p.id
     if (!$result) {
-        throw "No associated nodes "
+        throw "No associated nodes"
     }
 
     $result
@@ -97,9 +118,13 @@ function s-nlb-getStatus {
     }
 }
 
-function s-nlb-openBrowser {
-    $url = s-nlb-getUrl
+function s-nlb-openNlbSite {
+    param(
+        [switch]$openInSameWindow
+    )
 
+    $url = s-nlb-getUrl
+    _s-utils-openBrowser -url $url -openInSameWindow:$openInSameWindow 
 }
 
 function _s-app-setMachineKey {
@@ -137,7 +162,7 @@ function _nlb-setupNode ([SfProject]$node, $urls) {
     try {
         sd-project-setCurrent $node
         _s-app-setMachineKey
-        _s-execute-utilsRequest -typeName "NlbSetup" -methodName "AddNode" -parameters $urls
+        _s-execute-utilsRequest -typeName "NlbSetup" -methodName "AddNode" -parameters $urls > $null
         s-settings-setSslOffload -flag $true
     }
     finally {

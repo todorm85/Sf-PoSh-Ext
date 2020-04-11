@@ -66,7 +66,7 @@ function s-siteSync-install {
 }
 
 function s-siteSync-getTargetUrl {
-    _s-execute-utilsRequest -typeName "SiteSync" -methodName "GetTargetUrl"
+    _s-execute-utilsRequest -typeName "SiteSync" -methodName "GetTargetUrl" > $null
 }
 
 function s-siteSync-uninstall {

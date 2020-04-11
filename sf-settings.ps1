@@ -26,5 +26,5 @@ function s-settings-setSslOffload {
         [bool]$flag
     )
     
-    _s-execute-utilsRequest -typeName "NlbSetup" -methodName "SetSslOffload" -parameters $flag.ToString()
+    _s-execute-utilsRequest -typeName "NlbSetup" -methodName "SetSslOffload" -parameters $flag.ToString() > $null
 }

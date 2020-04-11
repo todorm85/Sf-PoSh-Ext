@@ -10,7 +10,7 @@ $functionNames = $files | Get-Content | % { $_.TrimStart() } | ? { $_.StartsWith
 $Script:registeredServices = @()
 if (!$Global:SfEvents_OnAfterProjectSelected) {$Global:SfEvents_OnAfterProjectSelected = @()}
 $Global:SfEvents_OnAfterProjectSelected += {
-    s-utils-deploy
+    # s-utils-deploy # should be on after initialized
 }
 
 Export-ModuleMember -Function $functionNames

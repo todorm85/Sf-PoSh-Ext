@@ -75,7 +75,7 @@ function s-bindings-getLocalhostBinding {
         [Parameter(Mandatory=$true)][ValidateNotNullOrEmpty()][string]$websiteName
     )
 
-    iis-bindingss-getAll -siteName $websiteName | ? domain -like "" | select -First 1
+    iis-bindings-getAll -siteName $websiteName | ? domain -like "" | select -First 1
 }
 
 function s-bindings-getLocalhostUrl {

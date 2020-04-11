@@ -30,6 +30,19 @@ function _nginx-createNewCluster {
     s-nginx-reset
 }
 
+function _s-nginx-removeCluster {
+    param (
+        $nlbTag
+    )
+    
+    $clusterId = _nlbTags-getClusterIdFromTag $nlbTag
+    $nlbPairConfigPath = "$(_get-toolsConfigDirPath)\$($clusterId).config"
+    Remove-Item -Path $nlbPairConfigPath -Force
+
+    $nlbDomain = _nlbTags-getDomain -tag $nlbTag
+    os-hosts-remove -hostname $nlbDomain
+}
+
 function _nginx-createNlbClusterConfig {
     param (
         [string]$nlbTag,

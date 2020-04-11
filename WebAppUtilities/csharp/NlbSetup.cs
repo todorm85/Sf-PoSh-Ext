@@ -33,6 +33,12 @@ namespace SitefinityWebApp
             this.SaveChanges();
         }
 
+        public void RemoveAllNodes()
+        {
+            this.config.LoadBalancingConfig.URLS.Clear();
+            this.SaveChanges();
+        }
+
         public void SetSslOffload(string value)
         {
             this.config.SslOffloadingSettings.EnableSslOffloading = bool.Parse(value);

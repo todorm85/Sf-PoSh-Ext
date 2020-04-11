@@ -78,13 +78,23 @@ function s-utils-open {
         $page = "uitest"
     )
 
-    [SfProject]$p = sd-project-getCurrent
     $url = sd-iisSite-getUrl
+    $pagePath = "$url/sf-dev-pages/$page.aspx"
 
-    $browser = "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
+    _s-utils-openBrowser $pagePath -openInSameWindow:$openInSameBrowser
+}
+
+function _s-utils-openBrowser {
+    param (
+        [string]$url,
+        [switch]$openInSameWindow
+    )
+
+    $browser = $GLOBAL:sf.config.browserPath
     if (!$openInSameBrowser) {
         Start-Process $browser
+        Start-Sleep 1
     }
     
-    & "$browser" $url/sf-dev-pages/$page.aspx -noframemerging
+    & "$browser" $url -noframemerging
 }
