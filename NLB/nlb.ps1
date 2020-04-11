@@ -12,6 +12,10 @@ function s-nlb-setup {
 
 function s-nlb-getOtherNodes {
     [SfProject]$p = sd-project-getCurrent
+    if (!$p) {
+        throw "No project selected."
+    }
+    
     $tag = _nlbTags-filterNlbTag $p.tags
     if (!$tag) {
         throw "Project not part of NLB cluster."
@@ -25,8 +29,43 @@ function s-nlb-getOtherNodes {
     $result
 }
 
+function s-nlb-forAllNodes {
+    param (
+        [Parameter(Mandatory=$true)]
+        [ScriptBlock]$script
+    )
+
+    $p = sd-project-getCurrent
+    if (!$p) {
+        throw "No project selected."
+    }
+
+    Invoke-Command -ScriptBlock $script
+    s-nlb-getOtherNodes | % {
+        sd-project-setCurrent $_
+        Invoke-Command -ScriptBlock $script
+    }
+
+    sd-project-setCurrent $p
+}
+
+function s-nlb-setSslOffloadForAll {
+    param (
+        [Parameter(Mandatory=$true)]
+        [bool]$flag
+    )
+    
+    s-nlb-forAllNodes {
+        s-settings-setSslOffload -flag $flag
+    }
+}
+
 function s-nlb-getUrl {
     $p = sd-project-getCurrent
+    if (!$p) {
+        throw "No project selected."
+    }
+
     $nlbTag = _nlbTags-filterNlbTag $p.tags
     if (!$nlbTag) {
         throw "No nlb configured for current project."
@@ -35,11 +74,32 @@ function s-nlb-getUrl {
     _nlbTags-getUrlFromTag $nlbTag
 }
 
-function s-nlb-status {
+function s-nlb-getStatus {
     $p = sd-project-getCurrent
-    $otherNode = s-nlb-getOtherNodes
+    if (!$p) {
+        throw "No project selected."
+    }
+
+    $nlbTag = _nlbTags-filterNlbTag $p.tags
+    if ($nlbTag) {
+        $otherNode = s-nlb-getOtherNodes
+        $url = s-nlb-getUrl
+        [PScustomObject]@{
+            enabled = $true;
+            url = $url;
+            nodeIds = @($p.id, $otherNode.id)
+        }
+    }
+    else {
+        [PScustomObject]@{
+            enabled = $false;
+        }
+    }
+}
+
+function s-nlb-openBrowser {
     $url = s-nlb-getUrl
-    Write-Host "Enabled for $($p.id) and $($otherNode.id) on $url"
+
 }
 
 function _s-app-setMachineKey {
@@ -78,18 +138,15 @@ function _nlb-setupNode ([SfProject]$node, $urls) {
         sd-project-setCurrent $node
         _s-app-setMachineKey
         _s-execute-utilsRequest -typeName "NlbSetup" -methodName "AddNode" -parameters $urls
-        _s-execute-utilsRequest -typeName "NlbSetup" -methodName "SetSslOffload" -parameters "true"
+        s-settings-setSslOffload -flag $true
     }
     finally {
         sd-project-setCurrent $previous
     }
-        
 }
 
 function _nlb-isProjectValidForNlb {
-    $firstNode = sd-project-getCurrent
-    $nlbTag = _nlbTags-filterNlbTag $firstNode.tags
-    if ($nlbTag) {
+    if ((s-nlb-getStatus).enabled) {
         Write-Warning "Already setup in NLB"
         return $false
     }
@@ -98,7 +155,7 @@ function _nlb-isProjectValidForNlb {
     $dbName = sd-db-getNameFromDataConfig
     $dbServer = sql-get-dbs | ? { $_.name -eq $dbName }
     if (!$dbServer) {
-        Write-Warning "Not initialized with db. Initializing..."
+        Write-Warning "Not initialized with db"
         return $false
     }
     

@@ -60,6 +60,16 @@ server {
     location / {
         proxy_pass http://$nlbClusterId;
     }
+}
+
+server {
+    listen 80;
+    server_name $nlbDomain;
+    proxy_set_header Host `$host;
+    include sf-dev-ext/common.conf;
+    location / {
+        proxy_pass http://$nlbClusterId;
+    }
 }"
 
     $nlbPairConfigPath = "$(_get-toolsConfigDirPath)\$($nlbClusterId).config"

@@ -20,3 +20,11 @@ function s-settings-getBasicAuthGetHeaderValue ($user = "basicAuth@test.test", $
     $EncodedText = [Convert]::ToBase64String($Bytes)
     "Basic $EncodedText"
 }
+
+function s-settings-setSslOffload {
+    param (
+        [bool]$flag
+    )
+    
+    _s-execute-utilsRequest -typeName "NlbSetup" -methodName "SetSslOffload" -parameters $flag.ToString()
+}

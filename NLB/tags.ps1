@@ -21,6 +21,7 @@ function _nlbTags-getUrlFromTag {
 
 function _nlbTags-filterNlbTag {
     param (
+        [Parameter(Mandatory=$true)]
         [string[]]$tags
     )
 
