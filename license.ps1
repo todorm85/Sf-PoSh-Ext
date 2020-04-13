@@ -21,5 +21,5 @@ function sfe-license-set {
         Default { throw "Invalid mode" }
     }
 
-    sf-app-waitForSitefinityToStart
+    sf-app-sendRequestAndEnsureInitialized
 }

@@ -44,7 +44,7 @@ function sfe-siteSync-install {
     $dbServer = sql-get-dbs | ? { $_.name -eq $dbName }
     if (!$dbServer) {
         Write-Warning "Not initialized with db. Initializing..."
-        sf-app-reinitializeAndStart
+        sf-app-sendRequestAndEnsureInitialized
     }
 
     # clone with database clone

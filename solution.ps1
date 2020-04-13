@@ -5,7 +5,7 @@ function sfe-openUiSolution {
 
 function sfe-buildAndStart {
     sf-sol-build -retryCount 3
-    sf-app-waitForSitefinityToStart
+    sf-app-sendRequestAndEnsureInitialized
 }
 
 function sfe-goto {
