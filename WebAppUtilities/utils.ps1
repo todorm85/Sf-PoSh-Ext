@@ -6,16 +6,12 @@ $script:deploymentPaths = @(
     @{
         appRelativePath  = "App_Code\sf-dev-extensions"
         toolPath = "$PSScriptRoot\csharp"
-    },
-    @{
-        appRelativePath  = "sf-dev-extensions\services"
-        toolPath = "$PSScriptRoot\svc"
     }
 )
 
-function s-utils-deploy {
+function sfe-utils-deploy {
     param([switch]$toTool)
-    [SfProject]$p = sd-project-getCurrent
+    [SfProject]$p = sf-project-getCurrent
     if (!$p) {
         throw "No project selected."
     }
@@ -44,57 +40,17 @@ function s-utils-deploy {
 }
 
 function _s-execute-utilsRequest ([string]$typeName, [string]$methodName, [string[]]$parameters) {
-    $parametersString = ""
-    $parameters | %{ $parametersString += ";$_" }
-    $parametersString = $parametersString.TrimStart(';')
-
-    $encodedType = [System.Web.HttpUtility]::UrlEncode("SitefinityWebApp.$typeName")
-    $encodedParams = [System.Web.HttpUtility]::UrlEncode($parametersString)
-    $encodedMethod = [System.Web.HttpUtility]::UrlEncode($methodName)
-    $serviceRequestPath = "CodeRunner.svc/CallMethod?methodName=$encodedMethod&typeName=$encodedType&params=$encodedParams"
-
-    sf -start
-    
-    $baseUrl = sd-iisSite-getUrl
-    $response = Invoke-WebRequest -Uri "$baseUrl/sf-dev-extensions/services/$serviceRequestPath"
-    if ($response.StatusCode -ne 200) {
-        Write-Error "Response status code was not 200 OK."
-    }
-    else {
-        Write-Information "Operation complete!"
-    }
-
-    if ($response.Content) {
-        return $response.Content | ConvertFrom-Json
-    }
-    else {
-        return $response
-    }
+    sf-serverCode-run "SitefinityWebApp.SfDevExt.$typeName" $methodName $parameters
 }
 
-function s-utils-open {
+function sfe-utils-open {
     param(
         [switch]$openInSameBrowser,
         $page = "uitest"
     )
 
-    $url = sd-iisSite-getUrl
+    $url = sf-iisSite-getUrl
     $pagePath = "$url/sf-dev-pages/$page.aspx"
 
-    _s-utils-openBrowser $pagePath -openInSameWindow:$openInSameBrowser
-}
-
-function _s-utils-openBrowser {
-    param (
-        [string]$url,
-        [switch]$openInSameWindow
-    )
-
-    $browser = $GLOBAL:sf.config.browserPath
-    if (!$openInSameBrowser) {
-        Start-Process $browser
-        Start-Sleep 1
-    }
-    
-    & "$browser" $url -noframemerging
+    os-browseUrl -url $pagePath -openInSameWindow:$openInSameBrowser
 }

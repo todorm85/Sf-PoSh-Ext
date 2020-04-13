@@ -1,5 +1,5 @@
-function s-uitests-setup {
-    [SfProject]$p = sd-project-getCurrent
+function sfe-uitests-setup {
+    [SfProject]$p = sf-project-getCurrent
     if (!$p) {
         throw "no project"
     }
@@ -11,7 +11,7 @@ function s-uitests-setup {
 }
 
 function _updateProjectData {
-    [SfProject]$p = sd-project-getCurrent
+    [SfProject]$p = sf-project-getCurrent
     $xmlPath = $p.solutionPath + "\Telerik.Sitefinity.MS.TestUI.TestCases\Data\ProjectData.xml"
     $projectPath = $p.solutionPath + "\Telerik.Sitefinity.MS.TestUI.TestCases"
     [XML]$xml = Get-Content $xmlPath
@@ -20,12 +20,12 @@ function _updateProjectData {
 }
 
 function _update_testCasesAppConfig {
-    [SfProject]$p = sd-project-getCurrent
+    [SfProject]$p = sf-project-getCurrent
     $appConfigPath = $p.solutionPath + "\Telerik.Sitefinity.MS.TestUI.TestCases\app.config"
     
     [XML]$appConfigContent = Get-Content $appConfigPath
     $defaultMachineConfig = $appConfigContent.SelectSingleNode("/configuration/machineSpecificConfigurations/machines/add[@name='default']");
-    $url = sd-iisSite-getUrl
+    $url = sf-iisSite-getUrl
     $defaultMachineConfig.SetAttribute("baseUrl", $url) > $null
 
     $urlNodes = $defaultMachineConfig.SelectNodes("additionalUrls/add")
@@ -37,7 +37,7 @@ function _update_testCasesAppConfig {
 }
 
 function _updateWebConfig {
-    [SfProject]$p = sd-project-getCurrent
+    [SfProject]$p = sf-project-getCurrent
     $webConfigPath = "$($p.webAppPath)\web.config"
     [XML]$webConfig = Get-Content $webConfigPath
     $appSettings = $webConfig.SelectSingleNode("/configuration/appSettings")

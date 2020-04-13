@@ -8,7 +8,7 @@ The depth of the hierarchy of pages
 .PARAMETER forAllSites
 Whether to generate the same hierarchy for every site in Sitefinity
 #>
-function s-seedPages {
+function sfe-seedPages {
     param (
         [Parameter(Mandatory = $true)]
         [ValidateScript( { $_ -gt 0 })]
@@ -30,7 +30,7 @@ function s-seedPages {
     _s-execute-utilsRequest -typeName "Pages" -methodName "Seed" -parameters @($pagesPerLevelCount, $levelsCount, $allSitesValue) > $null
 }
 
-function s-seedPages-deleteAll {
+function sfe-seedPages-deleteAll {
     param (
         [switch]$allSites
     )
@@ -40,11 +40,11 @@ function s-seedPages-deleteAll {
     _s-execute-utilsRequest -typeName "Pages" -methodName "DeleteAll" -parameters @($allSitesValue) > $null
 }
 
-function s-seedPages-AddContentWidgetToAllPages {
+function sfe-seedPages-AddContentWidgetToAllPages {
     _s-execute-utilsRequest -typeName "Pages" -methodName "AddContentWidgetToAllPages" > $null
 }
 
-function s-seedPages-CreateChildPages {
+function sfe-seedPages-CreateChildPages {
     param (
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]

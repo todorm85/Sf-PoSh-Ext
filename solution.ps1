@@ -1,14 +1,14 @@
-function s-openUiSolution {
-    [SfProject]$p = sd-project-getCurrent
+function sfe-openUiSolution {
+    [SfProject]$p = sf-project-getCurrent
     . "$($p.solutionPath)\Telerik.Sitefinity.MS.TestUI.sln"
 }
 
-function s-buildAndStart {
-    sd-sol-build -retryCount 3
-    sd-app-waitForSitefinityToStart
+function sfe-buildAndStart {
+    sf-sol-build -retryCount 3
+    sf-app-waitForSitefinityToStart
 }
 
-function s-goto {
+function sfe-goto {
     Param(
         [switch]$configs,
         [switch]$logs,
@@ -16,7 +16,7 @@ function s-goto {
         [switch]$webConfig
     )
 
-    $context = sd-project-getCurrent
+    $context = sf-project-getCurrent
     $webAppPath = $context.webAppPath
 
     if ($configs) {

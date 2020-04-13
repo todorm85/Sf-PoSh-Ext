@@ -2,7 +2,7 @@
 using Telerik.Sitefinity.Multisite;
 using Telerik.Sitefinity.Services;
 
-namespace SitefinityWebApp.App_Code
+namespace SitefinityWebApp.SfDevExt
 {
     public class Utils
     {

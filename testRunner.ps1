@@ -1,12 +1,12 @@
-function s-startWebTestRunner {
-    [SfProject]$p = sd-project-getCurrent
+function sfe-startWebTestRunner {
+    [SfProject]$p = sf-project-getCurrent
     if ($p) {
         $testRunnerPath = "D:\IntegrationTestsRunner"
         $testRunnerConfigPath = "$testRunnerPath\Telerik.WebTestRunner.Client.exe.Config"
         $allLines = Get-Content -Path $testRunnerConfigPath
         $newLines = $allLines | % {
             if ($_.Contains("TMITSKOV")) {
-                return "<machine name=""TMITSKOV"" testingInstanceUrl=""$(sd-iisSite-getUrl)"" />"
+                return "<machine name=""TMITSKOV"" testingInstanceUrl=""$(sf-iisSite-getUrl)"" />"
             } else {
                 return $_
             }

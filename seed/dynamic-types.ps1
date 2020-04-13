@@ -1,4 +1,4 @@
-function s-seedDynamicTypes {
+function sfe-seedDynamicTypes {
     param (
         [Parameter(Mandatory=$true)]
         [ValidateNotNullOrEmpty()]
@@ -12,6 +12,6 @@ function s-seedDynamicTypes {
     _s-execute-utilsRequest -typeName "DynamicModule" -methodName "Seed" -parameters @($parentsCount, $childCount) > $null
 }
 
-function s-seedDynamicTypes-uninstall {
+function sfe-seedDynamicTypes-uninstall {
     _s-execute-utilsRequest -typeName "DynamicModule" -methodName "Uninstall" > $null
 }

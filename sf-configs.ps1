@@ -10,14 +10,14 @@
     .OUTPUTS
     None
 #>
-function s-conf-setStorageMode {
+function sfe-conf-setStorageMode {
     
     Param (
         [string]$storageMode,
         [string]$restrictionLevel
     )
 
-    $context = sd-project-getCurrent
+    $context = sf-project-getCurrent
 
     if ($storageMode -eq '') {
         do {
@@ -102,11 +102,11 @@ function s-conf-setStorageMode {
     .OUTPUTS
     psobject -property  @{StorageMode = $storageMode; RestrictionLevel = $restrictionLevel}
 #>
-function s-conf-getStorageMode {
+function sfe-conf-getStorageMode {
     
     Param()
 
-    $context = sd-project-getCurrent
+    $context = sf-project-getCurrent
 
     # set web.config readonly off
     $webConfigPath = $context.webAppPath + '\web.config'
@@ -147,7 +147,7 @@ function s-conf-getStorageMode {
     .OUTPUTS
     None
 #>
-function s-conf-getFromDb {
+function sfe-conf-getFromDb {
     
     Param(
         [Parameter(Mandatory = $true)]$configName,
@@ -177,7 +177,7 @@ function s-conf-getFromDb {
     .PARAMETER configName
     The sitefinity config name withouth extension
 #>
-function s-conf-clearInDb {
+function sfe-conf-clearInDb {
     
     Param(
         [Parameter(Mandatory = $true)]$configName
@@ -203,7 +203,7 @@ function s-conf-clearInDb {
     .OUTPUTS
     None
 #>
-function s-conf-setInDb {
+function sfe-conf-setInDb {
     
     Param(
         [Parameter(Mandatory = $true)]$configName,

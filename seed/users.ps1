@@ -2,7 +2,7 @@
 .PARAMETER roles
 Comma separated list of roles. (Administrators,Editors,Users,Authors,BackendUsers)
 #>
-function s-seedUsers {
+function sfe-seedUsers {
     param (
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]

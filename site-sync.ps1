@@ -1,8 +1,8 @@
-function s-sitesync-setupTarget {
+function sfe-sitesync-setupTarget {
     _s-execute-utilsRequest -typeName "SiteSync" -methodName "SetupDestination" > $null
 }
 
-function s-sitesync-setupSource {
+function sfe-sitesync-setupSource {
     param (
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
@@ -13,7 +13,7 @@ function s-sitesync-setupSource {
     _s-execute-utilsRequest -typeName "SiteSync" -methodName "SetupSrc" -parameters $targetUrl > $null
 }
 
-function s-sitesync-sync {
+function sfe-sitesync-sync {
     param (
         [string]$types
     )
@@ -29,47 +29,47 @@ function s-sitesync-sync {
     _s-execute-utilsRequest -typeName "SiteSync" -methodName "Sync" -parameters $types > $null
 }
 
-function s-siteSync-install {
-    [SfProject]$source = sd-project-getCurrent
+function sfe-siteSync-install {
+    [SfProject]$source = sf-project-getCurrent
     $siteSyncTag = "SiteSync-$([Guid]::NewGuid().ToString().Split('-')[0])"
 
     # # check if not already setup
-    # $targetUrl = s-siteSync-getTargetUrl
+    # $targetUrl = sfe-siteSync-getTargetUrl
     # if ($targetUrl) {
     #     throw "Sitesync already enabled. $targetUrl"
     # }
 
     # check if project is initialized
-    $dbName = sd-db-getNameFromDataConfig
+    $dbName = sf-db-getNameFromDataConfig
     $dbServer = sql-get-dbs | ? { $_.name -eq $dbName }
     if (!$dbServer) {
         Write-Warning "Not initialized with db. Initializing..."
-        sd-app-reinitializeAndStart
+        sf-app-reinitializeAndStart
     }
 
     # clone with database clone
-    sd-project-clone -skipSourceControlMapping
+    sf-project-clone -skipSourceControlMapping
 
     # setup the target
-    sd-project-rename -newName "$($source.displayName)_trg"
-    sd-projectTags-addToCurrent $siteSyncTag
-    s-sitesync-setupTarget
-    sd-appStates-save -stateName "siteSyncInit"
-    $targetUrl = sd-iisSite-getUrl
+    sf-project-rename -newName "$($source.displayName)_trg"
+    sf-projectTags-addToCurrent $siteSyncTag
+    sfe-sitesync-setupTarget
+    sf-appStates-save -stateName "siteSyncInit"
+    $targetUrl = sf-iisSite-getUrl
 
     # setup the source
-    sd-project-setCurrent -newContext $source
-    sd-projectTags-addToCurrent $siteSyncTag
-    sd-project-rename -newName "$($source.displayName)_src"
-    s-sitesync-setupSource -targetUrl $targetUrl
-    sd-appStates-save -stateName "siteSyncInit"
+    sf-project-setCurrent -newContext $source
+    sf-projectTags-addToCurrent $siteSyncTag
+    sf-project-rename -newName "$($source.displayName)_src"
+    sfe-sitesync-setupSource -targetUrl $targetUrl
+    sf-appStates-save -stateName "siteSyncInit"
 }
 
-function s-siteSync-getTargetUrl {
+function sfe-siteSync-getTargetUrl {
     _s-execute-utilsRequest -typeName "SiteSync" -methodName "GetTargetUrl" > $null
 }
 
-function s-siteSync-uninstall {
+function sfe-siteSync-uninstall {
     _s-execute-utilsRequest -typeName "SiteSync" -methodName "Uninstall" > $null
     # TODO remove all counterparts with relevant tags
 }

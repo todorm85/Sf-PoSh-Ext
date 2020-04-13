@@ -1,7 +1,7 @@
 ﻿using System;
 using Telerik.Sitefinity.TestIntegration.Helpers;
 
-namespace SitefinityWebApp
+namespace SitefinityWebApp.SfDevExt
 {
     public class Users
     {

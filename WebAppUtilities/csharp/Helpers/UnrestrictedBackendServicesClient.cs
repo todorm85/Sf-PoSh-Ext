@@ -6,7 +6,7 @@ using Telerik.Sitefinity.Configuration;
 using Telerik.Sitefinity.Services;
 using Telerik.Sitefinity.TestIntegration.Helpers;
 
-namespace SitefinityWebApp.App_Code
+namespace SitefinityWebApp.SfDevExt
 {
     public static class UnrestrictedBackendServicesClient
     {

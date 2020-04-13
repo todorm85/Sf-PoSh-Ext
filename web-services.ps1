@@ -1,12 +1,12 @@
-function s-wcf-invoke {
+function sfe-wcf-invoke {
     param(
         $body,
         $method = "POST"
     )
 
     # todo: check if not enabled already
-    s-settings-BasicAuthToggle
-    $authHeaderVal = s-settings-getBasicAuthGetHeaderValue
+    sfe-settings-BasicAuthToggle
+    $authHeaderVal = sfe-settings-getBasicAuthGetHeaderValue
     $headers = @{
         "Pragma"="no-cache";
         "Cache-Control"="no-cache";
@@ -14,6 +14,6 @@ function s-wcf-invoke {
         "Authorization"=$authHeaderVal
     }
     
-    $baseUrl = sd-iisSite-getUrl
+    $baseUrl = sf-iisSite-getUrl
     Invoke-WebRequest -Uri "$baseUrl/Sitefinity/Services/SiteSync/SiteSyncService.svc/StartSync/" -Method $method -Headers $headers -ContentType "application/json" -Body $body
 }

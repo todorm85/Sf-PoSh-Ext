@@ -1,10 +1,10 @@
-function s-license-set {
+function sfe-license-set {
     param(
         [ValidateSet("Default", "SingleSite", "MultiSite")]
         [string]$mode
     )
     
-    [SfProject]$proj = sd-project-getCurrent
+    [SfProject]$proj = sf-project-getCurrent
     $licensesPath = "$($proj.webAppPath)\App_Data\Sitefinity"
     $currentLicensePath = "$licensesPath\Sitefinity.lic"
     $defaultLicenseBackupPath = "$licensesPath\Sitefinity.lic.bak"
@@ -21,5 +21,5 @@ function s-license-set {
         Default { throw "Invalid mode" }
     }
 
-    sf -start
+    sf-app-waitForSitefinityToStart
 }

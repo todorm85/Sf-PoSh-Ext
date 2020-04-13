@@ -1,5 +1,5 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" %>
-<%@ Import Namespace="SitefinityWebApp.App_Code" %>
+<%@ Import Namespace="SitefinityWebApp.SfDevExt" %>
 
 Arrangement class:
 <asp:TextBox runat="server" ID="arngTp" Text="Telerik.Sitefinity.TestUI.Arrangements., Telerik.Sitefinity.TestUI.Arrangements" Width="1200px"></asp:TextBox>

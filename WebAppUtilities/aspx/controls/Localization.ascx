@@ -1,6 +1,6 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" %>
 <%@ Import Namespace="Telerik.Sitefinity.Abstractions" %>
-<%@ Import Namespace="SitefinityWebApp.App_Code" %>
+<%@ Import Namespace="SitefinityWebApp.SfDevExt" %>
 
 <asp:Button runat="server" Text="Enable localization" OnClick="EnableLocalizationClick" />
             <asp:Button runat="server" Text="Disable localization" OnClick="DisableLocalizationClick" />

@@ -1,6 +1,6 @@
 ﻿using SitefinityWebApp.App_Code;
 
-namespace SitefinityWebApp
+namespace SitefinityWebApp.SfDevExt
 {
     public class Settings
     {

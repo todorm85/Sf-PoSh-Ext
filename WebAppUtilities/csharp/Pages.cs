@@ -11,7 +11,7 @@ using Telerik.Sitefinity.Pages.Model;
 using Telerik.Sitefinity.TestUtilities.CommonOperations;
 using Telerik.Sitefinity.TestUtilities.Modules.Pages;
 
-namespace SitefinityWebApp
+namespace SitefinityWebApp.SfDevExt
 {
     public class Pages
     {
