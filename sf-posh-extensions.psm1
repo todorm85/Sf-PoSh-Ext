@@ -7,7 +7,7 @@ $functionNames = $files | Get-Content | % { $_.TrimStart() } | ? { $_.StartsWith
 
 # $functionNames = $functionNames | ? { !$_.StartsWith("_") }
 
-$Global:SfEvents_OnAfterProjectSelected += {
+$Global:SfEvents_OnAfterProjectInitialized += {
     # sfe-utils-deploy # should be on after initialized
 }
 

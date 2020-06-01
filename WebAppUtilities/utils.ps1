@@ -11,7 +11,7 @@ $script:deploymentPaths = @(
 
 function sfe-utils-deploy {
     param([switch]$toTool)
-    [SfProject]$p = sf-project-getCurrent
+    [SfProject]$p = sf-project-get
     if (!$p) {
         throw "No project selected."
     }
@@ -50,7 +50,7 @@ function sfe-utils-open {
     )
 
     $url = sf-iisSite-getUrl
-    $pagePath = "$url/sf-dev-pages/$page.aspx"
+    $pagePath = "$url/sf-dev-extensions/pages/$page.aspx"
 
     os-browseUrl -url $pagePath -openInSameWindow:$openInSameBrowser
 }

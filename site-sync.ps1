@@ -30,7 +30,7 @@ function sfe-sitesync-sync {
 }
 
 function sfe-siteSync-install {
-    [SfProject]$source = sf-project-getCurrent
+    [SfProject]$source = sf-project-get
     $siteSyncTag = "SiteSync-$([Guid]::NewGuid().ToString().Split('-')[0])"
 
     # # check if not already setup

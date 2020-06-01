@@ -17,7 +17,7 @@ function sfe-conf-setStorageMode {
         [string]$restrictionLevel
     )
 
-    $context = sf-project-getCurrent
+    $context = sf-project-get
 
     if ($storageMode -eq '') {
         do {
@@ -106,7 +106,7 @@ function sfe-conf-getStorageMode {
     
     Param()
 
-    $context = sf-project-getCurrent
+    $context = sf-project-get
 
     # set web.config readonly off
     $webConfigPath = $context.webAppPath + '\web.config'

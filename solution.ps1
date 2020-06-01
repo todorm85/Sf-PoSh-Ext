@@ -1,5 +1,5 @@
 function sfe-openUiSolution {
-    [SfProject]$p = sf-project-getCurrent
+    [SfProject]$p = sf-project-get
     . "$($p.solutionPath)\Telerik.Sitefinity.MS.TestUI.sln"
 }
 
@@ -16,7 +16,7 @@ function sfe-goto {
         [switch]$webConfig
     )
 
-    $context = sf-project-getCurrent
+    $context = sf-project-get
     $webAppPath = $context.webAppPath
 
     if ($configs) {

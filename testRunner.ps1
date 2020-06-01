@@ -1,5 +1,5 @@
 function sfe-startWebTestRunner {
-    [SfProject]$p = sf-project-getCurrent
+    [SfProject]$p = sf-project-get
     if ($p) {
         $testRunnerPath = "D:\IntegrationTestsRunner"
         $testRunnerConfigPath = "$testRunnerPath\Telerik.WebTestRunner.Client.exe.Config"

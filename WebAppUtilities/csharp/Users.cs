@@ -8,7 +8,7 @@ namespace SitefinityWebApp.SfDevExt
         public void Seed(string email, string roles)
         {
             var rolesCol = roles.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-            new CreateUserRegion(email, rolesCol);
+            new CreateUserRegion(email, email, email, rolesCol);
         }
     }
 }

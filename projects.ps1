@@ -13,7 +13,7 @@ function sfe-project-set {
 }
 
 function sfe-project-remove {
-    $p = sf-project-getCurrent
+    $p = sf-project-get
     if (!$p) {
         throw "No project."
     }
