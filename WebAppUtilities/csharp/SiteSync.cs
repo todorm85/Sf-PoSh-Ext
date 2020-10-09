@@ -5,7 +5,7 @@ using Telerik.Sitefinity.TestIntegration.Helpers;
 using Telerik.Sitefinity.TestIntegration.Modules.SiteSync;
 using Telerik.Sitefinity.TestUtilities.CommonOperations;
 
-namespace SitefinityWebApp.SfDevExt
+namespace SitefinityWebApp.SfDev
 {
     public class SiteSync
     {

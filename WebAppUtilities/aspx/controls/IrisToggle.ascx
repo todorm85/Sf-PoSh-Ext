@@ -1,5 +1,5 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" %>
-<%@ Import Namespace="SitefinityWebApp.SfDevExt" %>
+<%@ Import Namespace="SitefinityWebApp.SfDev" %>
 
 <asp:Button runat="server" Text="Toggle iris" OnClick="ToggleIrisClick" />
 Iris status:

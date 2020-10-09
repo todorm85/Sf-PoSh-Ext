@@ -1,4 +1,4 @@
-namespace SitefinityWebApp.SfDevExt
+namespace SitefinityWebApp.SfDev
 {
     public class Localization
     {

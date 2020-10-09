@@ -8,7 +8,7 @@ using Telerik.Sitefinity.Pages.Model;
 using Telerik.Sitefinity.TestUtilities.CommonOperations;
 using Telerik.Sitefinity.TestUtilities.Modules.Pages;
 
-namespace SitefinityWebApp.SfDevExt
+namespace SitefinityWebApp.SfDev
 {
     public class Pages
     {

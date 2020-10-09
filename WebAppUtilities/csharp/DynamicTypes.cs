@@ -5,7 +5,7 @@ using System.Web;
 using Telerik.Sitefinity.Services;
 using Telerik.Sitefinity.TestUtilities.CommonOperations;
 
-namespace SitefinityWebApp.SfDevExt
+namespace SitefinityWebApp.SfDev
 {
     public class DynamicModule
     {

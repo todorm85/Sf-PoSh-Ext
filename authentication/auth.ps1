@@ -91,3 +91,29 @@ function sfe-auth-aspsql {
 
     sf-config-save -config $config
 }
+
+function sfe-auth-google {
+    param (
+        [switch]$enable,
+        [switch]$disable
+    )
+
+    $config = sf-config-open -name "Authentication"
+    $root = $config["authenticationConfig"]
+
+    if ($enable) {
+        $googleEntry = xml-getOrCreateElementPath $root -elementPath "//securityTokenServiceSettings/authenticationProviders/add[@name=Google]"
+        $googleEntry.SetAttribute("appId", "771822853545-92c5hongqfb80nh927ejv6hajpceorbs.apps.googleusercontent.com")
+        $googleEntry.SetAttribute("appSecret", "Sn8tDo28EIAL-oVxOy9euYp0")
+        $googleEntry.SetAttribute("enabled", "True")
+        $googleEntry.SetAttribute("autoAssignedRoles", "Users, BackendUsers, Administrators")
+
+    }
+    
+    if($disable) {
+        $googleEntry = xml-getOrCreateElementPath $root -elementPath "//securityTokenServiceSettings/authenticationProviders/add[@name=Google]"
+        $googleEntry.SetAttribute("enabled", "False")
+    }
+
+    sf-config-save -config $config
+}

@@ -61,14 +61,14 @@ function sfe-siteSync-install {
     sf-project-rename -newName "$($sourceName)_trg"
     sfe-sitesync-setupTarget
     $siteSyncSuffix = "sitesync-$([Guid]::NewGuid().ToString().Split('-')[0].Substring(0,3))"
-    $siteSyncSuffix | sf-tags-add
+    sf-tags-add -tagName $siteSyncSuffix
     sf-appStates-save -stateName $siteSyncSuffix
     $targetUrl = sf-iisSite-getUrl
     
     # setup the source
     sf-project-setCurrent -newContext $source
     sf-project-rename -newName "$($sourceName)_src"
-    $siteSyncSuffix | sf-tags-add
+    sf-tags-add -tagName $siteSyncSuffix
     sfe-sitesync-setupSource -targetUrl $targetUrl
     sf-appStates-save -stateName $siteSyncSuffix
 }
@@ -88,10 +88,10 @@ function sfe-siteSync-uninstall {
     
     process {
         $project = Get-SfProjectFromPipeInput $project
-        InProjectScope $project {
+        Run-InProjectScope $project {
             _s-execute-utilsRequest -typeName "SiteSync" -methodName "Uninstall" > $null
             # TODO remove all counterparts with relevant tags
-            sf-tags-get | ? { $_ -like "sitesync-*" } | sf-tags-remove
+            sf-tags-get | ? { $_ -like "sitesync-*" } | % { sf-tags-remove -tagName $_ }
             sf-appStates-get | ? name -Like "sitesync-*" | sf-appStates-remove
             $name = $project.displayName.Replace("_src", "").Replace("_trg", "")
             if ($name -ne $project.displayName) {

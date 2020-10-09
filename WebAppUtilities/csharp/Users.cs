@@ -1,14 +1,14 @@
 ﻿using System;
 using Telerik.Sitefinity.TestIntegration.Helpers;
 
-namespace SitefinityWebApp.SfDevExt
+namespace SitefinityWebApp.SfDev
 {
     public class Users
     {
         public void Seed(string email, string roles)
         {
             var rolesCol = roles.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-            new CreateUserRegion(email, email, email, rolesCol);
+            new CreateUserRegion(email, rolesCol);
         }
     }
 }

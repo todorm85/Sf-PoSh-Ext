@@ -1,3 +1,12 @@
+$Global:sfFormatTableProperties = @(
+    @{Label = "Title"; Expression = { if ($showFullName -or $_.displayName.length -lt 30) { $_.displayName } else { $_.displayName.Substring(0, 30) } } },
+    "id",
+    @{Label = "branch"; Expression = { $_.branchDisplayName } },
+    @{Label = "days"; Expression = { $_.daysOld } },
+    @{Label = "tags"; Expression = { $_.tags | sort } },
+    "nlbId"
+)
+    
 function sfe-project-remove {
     $p = sf-project-get
     if (!$p) {
@@ -16,16 +25,7 @@ function sfe-project-select {
         [switch]$showFullName
     )
 
-    $props = @(
-        @{Label = "Title"; Expression = { if ($showFullName -or $_.displayName.length -lt 30) { $_.displayName } else { $_.displayName.Substring(0, 30) } } },
-        "id",
-        @{Label = "branch"; Expression = { $_.branchDisplayName } },
-        @{Label = "days"; Expression = { $_.daysOld } },
-        @{Label = "tags"; Expression = { $_.tags | sort } },
-        "nlbId"
-    )
-
-    sf-project-select -tagsFilter $tags -propsToShow $props
+    sf-project-select -tagsFilter $tags -propsToShow $Global:sfFormatTableProperties
 }
 
 Register-ArgumentCompleter -CommandName sfe-project-select -ParameterName tags -ScriptBlock $Global:SfTagFilterCompleter
@@ -40,3 +40,42 @@ function sfe-project-getAll {
 }
 
 Register-ArgumentCompleter -CommandName sfe-project-getAll -ParameterName tags -ScriptBlock $Global:SfTagFilterCompleter
+
+function sfe-project-setFree {
+    param (
+        [Parameter(ValueFromPipeline)]
+        [SfProject]
+        $project
+    )
+    
+    process {
+        Run-InFunctionAcceptingProjectFromPipeline {
+            sf-tags-remove -all
+            sf-project-rename -newName "free"
+        }
+    }
+}
+
+New-Alias -Name psf -Value sfe-project-setFree -Scope Global
+
+function sfe-project-formatTable {
+    param (
+        [Parameter(ValueFromPipeline)]
+        [SfProject]
+        $project
+    )
+
+    begin {
+        $allProjects = @()
+    }
+
+    process {
+        $allProjects += $project
+    }
+
+    end {
+        $allProjects | Sort -Property tags, branch | ft -Property $Global:sfFormatTableProperties
+    }
+}
+
+New-Alias -Name pft -Value sfe-project-formatTable -Scope Global

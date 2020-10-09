@@ -40,7 +40,7 @@ function sfe-utils-deploy {
 }
 
 function _s-execute-utilsRequest ([string]$typeName, [string]$methodName, [string[]]$parameters) {
-    sf-serverCode-run "SitefinityWebApp.SfDevExt.$typeName" $methodName $parameters
+    sf-serverCode-run "SitefinityWebApp.SfDev.$typeName" $methodName $parameters
 }
 
 function sfe-utils-open {
