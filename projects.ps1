@@ -41,23 +41,6 @@ function sfe-project-getAll {
 
 Register-ArgumentCompleter -CommandName sfe-project-getAll -ParameterName tags -ScriptBlock $Global:SfTagFilterCompleter
 
-function sfe-project-setFree {
-    param (
-        [Parameter(ValueFromPipeline)]
-        [SfProject]
-        $project
-    )
-    
-    process {
-        Run-InFunctionAcceptingProjectFromPipeline {
-            sf-tags-remove -all
-            sf-project-rename -newName "free"
-        }
-    }
-}
-
-New-Alias -Name psf -Value sfe-project-setFree -Scope Global
-
 function sfe-project-formatTable {
     param (
         [Parameter(ValueFromPipeline)]
@@ -97,6 +80,8 @@ function sfe-project-setFree {
         }
     }
 }
+
+New-Alias -Name psf -Value sfe-project-setFree -Scope Global
 
 Remove-Item -Path "Alias:\psf" -Force
 New-Alias -Name psf -Value sfe-project-setFree -Scope Global
