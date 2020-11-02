@@ -117,3 +117,28 @@ function sfe-auth-google {
 
     sf-config-save -config $config
 }
+
+function sfe-auth-basic-set {
+    param (
+        [switch]$disable
+    )
+
+    $configVal = "True"
+    if ($disable) {
+        $configVal = "False"
+    }
+
+    $config = sf-config-open -name "Authentication"
+    $root = $config["authenticationConfig"]
+    $relyingPartySettings = xml-getOrCreateElementPath -elementPath "//relyingPartySettings" -root $root
+    $relyingPartySettings.SetAttribute("enableBasicAuthenticationForBackendServices", $configVal)
+    sf-config-save -config $config
+}
+
+function sfe-auth-basic-getHeaderValue {
+    Param([Parameter(Mandatory=$true)]$user, $pass = "admin@2")
+    $Text = "$($user):$pass"
+    $Bytes = [System.Text.Encoding]::UTF8.GetBytes($Text)
+    $EncodedText = [Convert]::ToBase64String($Bytes)
+    "Basic $EncodedText"
+}

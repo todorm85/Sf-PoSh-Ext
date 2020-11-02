@@ -5,8 +5,8 @@ function sfe-wcf-invoke {
     )
 
     # todo: check if not enabled already
-    sfe-settings-BasicAuthToggle
-    $authHeaderVal = sfe-settings-getBasicAuthGetHeaderValue
+    sfe-auth-basic-set
+    $authHeaderVal = sfe-auth-basic-getHeaderValue -user "admin@test.test"
     $headers = @{
         "Pragma"="no-cache";
         "Cache-Control"="no-cache";

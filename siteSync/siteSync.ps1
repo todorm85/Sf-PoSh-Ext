@@ -1,5 +1,9 @@
+$Global:SfEvents_OnAfterProjectSet += {
+    sf-serverCode-deployDirectory "$PSScriptRoot\serverCode" "$($Global:sfe.appRelativeServerCodeRootPath)\siteSync"
+}
+
 function sfe-sitesync-setupTarget {
-    _s-execute-utilsRequest -typeName "SiteSync" -methodName "SetupDestination" > $null
+    sf-serverCode-run "SitefinityWebApp.SfDev.SiteSync" -methodName "SetupDestination" > $null
 }
 
 function sfe-sitesync-setupSource {
@@ -10,7 +14,7 @@ function sfe-sitesync-setupSource {
         $targetUrl
     )
 
-    _s-execute-utilsRequest -typeName "SiteSync" -methodName "SetupSrc" -parameters $targetUrl > $null
+    sf-serverCode-run "SitefinityWebApp.SfDev.SiteSync" -methodName "SetupSrc" -parameters $targetUrl > $null
 }
 
 function sfe-sitesync-sync {
@@ -26,7 +30,7 @@ function sfe-sitesync-sync {
         "Telerik.Sitefinity.DynamicTypes.Model.ParentChildModule.Grandchild"
     }
 
-    _s-execute-utilsRequest -typeName "SiteSync" -methodName "Sync" -parameters $types > $null
+    sf-serverCode-run "SitefinityWebApp.SfDev.SiteSync" -methodName "Sync" -parameters $types > $null
 }
 
 function sfe-siteSync-install {
@@ -37,7 +41,6 @@ function sfe-siteSync-install {
 
     [SfProject]$source = sf-project-get
     $sourceName = $source.displayName
-    sfe-utils-deploy
     # # check if not already setup
     # $targetUrl = sfe-siteSync-getTargetUrl
     # if ($targetUrl) {
@@ -74,7 +77,7 @@ function sfe-siteSync-install {
 }
 
 function sfe-siteSync-getTargetUrl {
-    _s-execute-utilsRequest -typeName "SiteSync" -methodName "GetTargetUrl" > $null
+    sf-serverCode-run "SitefinityWebApp.SfDev.SiteSync" -methodName "GetTargetUrl" > $null
 }
 
 function sfe-siteSync-uninstall {
@@ -89,7 +92,7 @@ function sfe-siteSync-uninstall {
     process {
         $project = Get-SfProjectFromPipeInput $project
         Run-InProjectScope $project {
-            _s-execute-utilsRequest -typeName "SiteSync" -methodName "Uninstall" > $null
+            sf-serverCode-run "SitefinityWebApp.SfDev.SiteSync" -methodName "Uninstall" > $null
             # TODO remove all counterparts with relevant tags
             sf-tags-get | ? { $_ -like "sitesync-*" } | % { sf-tags-remove -tagName $_ }
             sf-appStates-get | ? name -Like "sitesync-*" | sf-appStates-remove

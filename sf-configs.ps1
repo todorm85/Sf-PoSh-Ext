@@ -13,37 +13,13 @@
 function sfe-conf-setStorageMode {
     
     Param (
+        [ValidateSet("Auto", "Database", "FileSystem")]
         [string]$storageMode,
+        [ValidateSet("Default", "ReadOnlyConfigFile")]
         [string]$restrictionLevel
     )
 
     $context = sf-project-get
-
-    if ($storageMode -eq '') {
-        do {
-            $repeat = $false
-            $storageMode = Read-Host -Prompt 'Storage Mode: [f]ileSystem [d]atabase [a]uto'
-            switch ($storageMode) {
-                'f' { $storageMode = 'FileSystem' }
-                'd' { $storageMode = 'Database' }
-                'a' { $storageMode = 'Auto' }
-                default { $repeat = $true }
-            }
-        } while ($repeat)
-    }
-
-    if ($restrictionLevel -eq '' -and $storageMode.ToLower() -eq 'auto') {
-        do {
-            $repeat = $false
-            $restrictionLevel = Read-Host -Prompt 'Restriction level: [d]efault [r]eadonlyConfigFile'
-            switch ($restrictionLevel) {
-                'd' { $restrictionLevel = 'Default' }
-                'r' { $restrictionLevel = 'ReadOnlyConfigFile' }
-                default { $repeat = $true }
-            }
-        } while ($repeat)
-    }
-
     $webConfigPath = $context.webAppPath + '\web.config'
     # set web.config readonly off
     attrib -r $webConfigPath
@@ -151,20 +127,28 @@ function sfe-conf-getFromDb {
     
     Param(
         [Parameter(Mandatory = $true)]$configName,
+        $dbName,
         $filePath = "${Env:userprofile}\Desktop\dbExport.xml"
     )
 
-    $dbName = db-getNameFromDataConfig
+    if (!$dbName) {
+        $dbName = sf-db-getNameFromDataConfig
+    }
     
-    $config = sql-get-items -dbName $dbName -tableName 'sf_xml_config_items' -selectFilter 'dta' -whereFilter "path='${configName}.config'"
+    # $config = sql-get-items -dbName $dbName -tableName 'sf_xml_config_items' -selectFilter 'dta' -whereFilter "path='${configName}.config'"
+    $config = Invoke-SQLcmd -ServerInstance $global:sf.config.sqlServerInstance -Query ("
+        SELECT *
+        FROM [$dbName].[dbo].[sf_xml_config_items]
+        WHERE path = '$configName.config'
+        ") -MaxCharLength 500000
 
     if ($null -ne $config -and $config -ne '') {
         if (!(Test-Path $filePath)) {
             New-Item -ItemType file -Path $filePath
         }
 
-        $doc = [xml]$config.dta
-        $doc.Save($filePath) > $null
+        $config.dta | Out-File $filePath -Force -Encoding utf8
+        . $filePath
     }
     else {
         Write-Information 'Config not found in db'
@@ -217,4 +201,52 @@ function sfe-conf-setInDb {
     $where = "path='${configName}.config'"
     
     sql-update-items -dbName $dbName -tableName $table -whereFilter $where -value $value
+}
+
+function sfe-conf-exportAllFromDb {
+    param(
+        $dbName,
+        $server = ".",
+        [switch]$mergeInOneFile
+    )
+
+    if (!$dbName) {
+        $p = sf-project-get
+        $dbName = $p.dbName
+        if (!$dbName) {
+            throw "No db set."
+        }
+    }
+
+    $baseFilePath = "${Env:userprofile}\Desktop\exported_dbs\$dbName"
+    if (!(Test-Path $baseFilePath)) {
+        New-Item -Path $baseFilePath -ItemType Directory
+    }
+
+    $mergeFilePath = "$baseFilePath\$dbName.xml"
+    if ($mergeInOneFile) {
+        Remove-Item $mergeFilePath -Force -ErrorAction SilentlyContinue
+    }
+
+    $results = Invoke-SQLcmd -ServerInstance $server -Query ("
+        SELECT *
+        FROM [$dbName].[dbo].[sf_xml_config_items]
+        ORDER BY path
+        ") -MaxCharLength 500000
+    $results | % {
+        if ($mergeInOneFile) {
+            "<!--  $($_.path) -->`n$($_.dta)`n" | Out-File -FilePath $mergeFilePath -Encoding utf8 -Append
+        }
+        else {
+            $filePath = "$baseFilePath\$($_.path)"
+            $currentItem = $_
+            try {
+                $doc = [xml]$currentItem.dta
+                $doc.Save($filePath) > $null
+            }
+            catch {
+                $currentItem.dta | Out-File -FilePath $filePath -Encoding utf8 -Force        
+            }
+        }
+    }
 }

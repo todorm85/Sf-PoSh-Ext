@@ -1,3 +1,7 @@
+$Global:SfEvents_OnAfterProjectSet += {
+    sf-serverCode-deployDirectory "$PSScriptRoot\serverCode" "$($Global:sfe.appRelativeServerCodeRootPath)\pages"
+}
+
 <#
 .SYNOPSIS
 Seeds a hierarchy of pages into Sitefinity instance. The system must have an Admin user with email and username admin@test.test
@@ -27,7 +31,7 @@ function sfe-seedPages {
     $allSitesValue = "false"
     if ($forAllSites) { $allSitesValue = "true" }
 
-    _s-execute-utilsRequest -typeName "Pages" -methodName "Seed" -parameters @($pagesPerLevelCount, $levelsCount, $allSitesValue) > $null
+    sf-serverCode-run "SitefinityWebApp.SfDev.Pages" -methodName "Seed" -parameters @($pagesPerLevelCount, $levelsCount, $allSitesValue) > $null
 }
 
 function sfe-seedPages-deleteAll {
@@ -37,11 +41,11 @@ function sfe-seedPages-deleteAll {
 
     $allSitesValue = "false"
     if ($forAllSites) { $allSitesValue = "true" }
-    _s-execute-utilsRequest -typeName "Pages" -methodName "DeleteAll" -parameters @($allSitesValue) > $null
+    sf-serverCode-run "SitefinityWebApp.SfDev.Pages" -methodName "DeleteAll" -parameters @($allSitesValue) > $null
 }
 
 function sfe-seedPages-AddContentWidgetToAllPages {
-    _s-execute-utilsRequest -typeName "Pages" -methodName "AddContentWidgetToAllPages" > $null
+    sf-serverCode-run "SitefinityWebApp.SfDev.Pages" -methodName "AddContentWidgetToAllPages" > $null
 }
 
 function sfe-seedPages-CreateChildPages {
@@ -57,5 +61,5 @@ function sfe-seedPages-CreateChildPages {
         [string]$pageTitle
     )
 
-    _s-execute-utilsRequest -typeName "Pages" -methodName "CreateChildPages" -parameters @($urlName, $countRaw, $pageTitle) > $null
+    sf-serverCode-run "SitefinityWebApp.SfDev.Pages" -methodName "CreateChildPages" -parameters @($urlName, $countRaw, $pageTitle) > $null
 }
