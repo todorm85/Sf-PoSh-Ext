@@ -1,4 +1,4 @@
-$Global:sfFormatTableProperties = @(
+$sfFormatTableProperties = @(
     @{Label = "Title"; Expression = { if ($showFullName -or $_.displayName.length -lt 30) { $_.displayName } else { $_.displayName.Substring(0, 30) } } },
     "id",
     @{Label = "branch"; Expression = { $_.branchDisplayName } },
@@ -6,6 +6,8 @@ $Global:sfFormatTableProperties = @(
     @{Label = "tags"; Expression = { $_.tags | sort } },
     "nlbId"
 )
+
+Add-Member -InputObject $Global:sfe -MemberType NoteProperty -Value $sfFormatTableProperties -Name formatTableProperties
     
 function sfe-project-remove {
     $p = sf-project-get
@@ -25,7 +27,7 @@ function sfe-project-select {
         [switch]$showFullName
     )
 
-    sf-project-select -tagsFilter $tags -propsToShow $Global:sfFormatTableProperties
+    sf-project-select -tagsFilter $tags -propsToShow $Global:sfe.formatTableProperties
 }
 
 Register-ArgumentCompleter -CommandName sfe-project-select -ParameterName tags -ScriptBlock $Global:SfTagFilterCompleter
@@ -57,7 +59,7 @@ function sfe-project-formatTable {
     }
 
     end {
-        $allProjects | Sort -Property tags, branch | ft -Property $Global:sfFormatTableProperties
+        $allProjects | Sort -Property tags, branch | ft -Property $Global:sfe.formatTableProperties
     }
 }
 

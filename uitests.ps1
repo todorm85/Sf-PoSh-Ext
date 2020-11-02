@@ -1,3 +1,8 @@
+function sfe-openUiSolution {
+    [SfProject]$p = sf-project-get
+    . "$($p.solutionPath)\Telerik.Sitefinity.MS.TestUI.sln"
+}
+
 function sfe-uitests-setup {
     [SfProject]$p = sf-project-get
     if (!$p) {

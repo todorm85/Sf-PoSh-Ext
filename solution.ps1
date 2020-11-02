@@ -1,13 +1,3 @@
-function sfe-openUiSolution {
-    [SfProject]$p = sf-project-get
-    . "$($p.solutionPath)\Telerik.Sitefinity.MS.TestUI.sln"
-}
-
-function sfe-buildAndStart {
-    sf-sol-build -retryCount 3
-    sf-app-sendRequestAndEnsureInitialized
-}
-
 function sfe-goto {
     Param(
         [switch]$configs,
