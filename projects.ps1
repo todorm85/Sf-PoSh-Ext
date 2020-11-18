@@ -64,26 +64,3 @@ function sfe-project-formatTable {
 }
 
 New-Alias -Name pft -Value sfe-project-formatTable -Scope Global
-
-function sfe-project-setFree {
-    param(
-        [Parameter(ValueFromPipeline)]
-        [SfProject]
-        $project
-    )
-
-    process {
-        Run-InFunctionAcceptingProjectFromPipeline {
-            sf-project-rename -newName free
-            sf-tags-remove -all
-            if (sf-sourceControl-hasPendingChanges) {
-                sf-sourceControl-undoPendingChanges
-            }
-        }
-    }
-}
-
-New-Alias -Name psf -Value sfe-project-setFree -Scope Global
-
-Remove-Item -Path "Alias:\psf" -Force
-New-Alias -Name psf -Value sfe-project-setFree -Scope Global
