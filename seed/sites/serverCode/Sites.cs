@@ -20,14 +20,16 @@ namespace SitefinityWebApp.SfDev
 
             var defaultSite = SystemManager.CurrentContext.MultisiteContext.GetSites().Single(s => s.IsDefault);
             var cultures = Config.Get<ResourcesConfig>().Cultures.Values.Select(c => new CultureViewModel(c)).ToList();
-
-            //if (duplicateFromSite != null)
-            //    cultures = cultures.Where(cvm => duplicateFromSite.PublicContentCultures.Select(c => c.Name).Contains(cvm.Culture)).ToList();
+            var defaultCulture = cultures.FirstOrDefault(x => x.IsDefault);
+            if (defaultCulture == null)
+            {
+                cultures.First().IsDefault = true;
+            }
 
             var url = defaultSite.LiveUrl;
             var name = defaultSite.Name;
 
-            for (int i = 1; i < numberOfSitesToCreate; i++)
+            for (int i = 0; i < numberOfSitesToCreate; i++)
             {
                 var siteName = string.Concat(name, " ", (currentSitesCount + i));
                 var site = new SiteConfigurationViewModel

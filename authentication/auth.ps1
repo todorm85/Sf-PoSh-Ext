@@ -82,11 +82,11 @@ function sfe-auth-aspsql {
     if ($disable) {
         sql-delete-database -dbName $dbName
 
-        xml-removeElementIfExists $root "//connectionStrings/add[@name='AspNetMembership']"
+        xml-removeElementIfExists $root "connectionStrings/add[@name='AspNetMembership']"
         
-        xml-removeElementIfExists $root "//system.web/roleManager"
+        xml-removeElementIfExists $root "system.web/roleManager"
 
-        xml-removeElementIfExists $root "//system.web/membership/providers/add[@name='AspNetSqlMembershipProvider']"
+        xml-removeElementIfExists $root "system.web/membership/providers/add[@name='AspNetSqlMembershipProvider']"
     }
 
     sf-config-save -config $config
