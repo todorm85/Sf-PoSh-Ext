@@ -3,11 +3,14 @@ function sfe {
         [Parameter(ParameterSetName = "recreate")][switch]$fullReset,
         [Parameter(ParameterSetName = "startNew")][switch]$resetSourceCode,
         [Parameter(ParameterSetName = "sync")][switch]$syncSourceCode,
-        [Parameter(ParameterSetName = "setFree")][switch]$setFree
+        [Parameter(ParameterSetName = "setFree")][switch]$setFree,
+        [Parameter(ValueFromPipeline)]
+        [SfProject]$project
     )
     
     Process {
         Run-InFunctionAcceptingProjectFromPipeline {
+            param($project)
             if ($syncSourceCode) {
                 sf-appPrecompiledTemplates-remove
                 sf -getLatestChanges -stopWhenNoNewChanges -build

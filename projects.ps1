@@ -1,9 +1,31 @@
 $sfFormatTableProperties = @(
-    @{Label = "Title"; Expression = { if ($showFullName -or $_.displayName.length -lt 30) { $_.displayName } else { $_.displayName.Substring(0, 30) } } },
+    @{Label = "Title"; Expression = {
+            if ($showFullName -or $_.displayName.length -lt 20) {
+                $name = $_.displayName
+            } 
+            else {
+                $name = $_.displayName.Substring(0, 20) 
+            }
+
+            $name
+        } 
+    },
     "id",
-    @{Label = "branch"; Expression = { $_.branchDisplayName } },
-    @{Label = "days"; Expression = { $_.daysOld } },
-    @{Label = "tags"; Expression = { $_.tags | sort } },
+    @{Label = "branch"; Expression = {
+            if (!$_.branch) { return }
+            "$($_.branchDisplayName) ($($_.daysOld))" 
+        } 
+    },
+    @{Label = "ver"; Expression = { 
+            "$(sfe-project-getVersion $_)$(if ($_.solutionPath) { 's' })"
+        } 
+    },
+    @{Label = "tags"; Expression = {
+            $res = ""
+            $_.tags | sort | % { $res = "$res, $_" }
+            $res.TrimStart(',').TrimStart(' ')
+        } 
+    },
     "nlbId"
 )
 
@@ -64,3 +86,30 @@ function sfe-project-formatTable {
 }
 
 New-Alias -Name pft -Value sfe-project-formatTable -Scope Global
+
+function sfe-project-getVersion {
+    param(
+        [Parameter(Mandatory = $true)]
+        [SfProject]
+        $p
+    )
+
+    # try get from dll
+    $dllPath = "$($p.webAppPath)\bin\Telerik.Sitefinity.dll"
+    if (Test-Path $dllPath) {
+        $version = (Get-Item $dllPath | Select-Object -ExpandProperty VersionInfo).ProductVersion
+    }
+                
+    # try get from shared assembly
+    $assemblyFilePath = "$($p.webAppPath)\..\AssemblyInfoShare\SharedAssemblyInfo.cs"
+    if (Test-Path $assemblyFilePath) {
+        $versionRaw = Get-Content -Path $assemblyFilePath | ? { $_.StartsWith("[assembly: AssemblyVersion(") }
+        $version = $versionRaw.Split('"')[1]
+    }
+
+    if ($version) {
+        # $version.TrimEnd('0').TrimEnd('.')
+        $versionPart = $version.Split('.')
+        "$($versionPart[0]).$($versionPart[1])"
+    }
+}
