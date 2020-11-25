@@ -31,7 +31,8 @@ function sfe {
             }
 
             if ($setFree) {
-                sf-tags-remove -all
+                $excludeTags = @("official", "archive")
+                sf-tags-get | ? {$excludeTags -notcontains $_} | sf-tags-remove
                 if ($project.branch) {
                     sf-project-rename -newName "free"
                     if (sf-sourceControl-hasPendingChanges) {
