@@ -1,7 +1,7 @@
 function sfe-upgrade {
     $current = sf-project-get
     [SfProject[]]$sitefinities = sf-project-get -all
-    $source = ui-promptItemSelect -items $sitefinities -propsToShow $sfe.formatTableProperties
+    $source = ui-promptItemSelect -items $sitefinities -propsToShow (sfe-project-mapPropertiesFor title,id,version,tags -display) -propsToOrderBy (sfe-project-mapPropertiesFor tags -sort )
     if (!(sf-app-isInitialized -project $source)) {
         throw "Source project is not initialized."
     }
