@@ -92,6 +92,7 @@ function sfe-auth-aspsql {
     sf-config-save -config $config
 }
 
+# Use localhost:18001
 function sfe-auth-google {
     param (
         [switch]$enable,
@@ -118,7 +119,7 @@ function sfe-auth-google {
     sf-config-save -config $config
 }
 
-function sfe-auth-basic-set {
+function sfe-auth-basic {
     param (
         [switch]$disable
     )
@@ -141,4 +142,17 @@ function sfe-auth-basic-getHeaderValue {
     $Bytes = [System.Text.Encoding]::UTF8.GetBytes($Text)
     $EncodedText = [Convert]::ToBase64String($Bytes)
     "Basic $EncodedText"
+}
+
+function sfe-auth-protocol {
+    param (
+        [ValidateSet("OpenId", "SimpleWebToken", "Default")]
+        $protocol
+    )
+
+    $config = sf-config-open -name "Authentication"
+    $root = $config["authenticationConfig"]
+    $root.SetAttribute("authenticationProtocol", $protocol)
+    sf-config-save -config $config
+    sf-iisAppPool-Reset
 }

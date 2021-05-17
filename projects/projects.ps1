@@ -1,4 +1,4 @@
-$script:defaultProjectPropsToShow = @("title", "id", "branch", "version", "tags", "nlbId")
+$script:defaultProjectPropsToShow = @("branch", "id", "title")
  
 $script:defaultProjectPropsToOrderBy = @("nlbId", "tags", "branch")
 
@@ -17,9 +17,8 @@ function sfe-project-remove {
 function sfe-project-select {
     param(
         [string[]]$tags,
-        $props,
+        [string[]]$additionalProps,
         $orderProps,
-        [switch]$showFullName,
         [Parameter(ValueFromPipeline)]
         [SfProject]
         $project
@@ -34,10 +33,10 @@ function sfe-project-select {
     }
 
     end {
-        if (!$props) {
-            $props = $script:defaultProjectPropsToShow
+        $props = $script:defaultProjectPropsToShow
+        if ($additionalProps) {
+            $props = $additionalProps + $props
         }
-
         if (!$orderProps) {
             $orderProps = $script:defaultProjectPropsToOrderBy
         }
@@ -64,6 +63,7 @@ Register-ArgumentCompleter -CommandName sfe-project-getAll -ParameterName tags -
 
 function sfe-project-formatTable {
     param (
+        [string[]]$additionalProps,
         [Parameter(ValueFromPipeline)]
         [SfProject]
         $project
@@ -78,7 +78,11 @@ function sfe-project-formatTable {
     }
 
     end {
-        $allProjects | ft -Property (sfe-project-mapPropertiesFor $script:defaultProjectPropsToShow -display)
+        $props = $script:defaultProjectPropsToShow
+        if ($additionalProps) {
+            $props = $additionalProps + $props
+        }
+        $allProjects | ft -Property (sfe-project-mapPropertiesFor $props -display) -Wrap
     }
 }
 

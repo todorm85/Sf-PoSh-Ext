@@ -1,5 +1,5 @@
 $Global:SfEvents_OnAfterProjectSet += {
-    sf-serverCode-deployDirectory "$PSScriptRoot\serverCode" "$($Global:sfe.appRelativeServerCodeRootPath)\siteSync"
+    # sf-serverCode-deployDirectory "$PSScriptRoot\serverCode" "$($Global:sfe.appRelativeServerCodeRootPath)\siteSync"
 }
 
 function sfe-sitesync-setupTarget {

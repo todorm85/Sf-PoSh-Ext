@@ -2,22 +2,17 @@ $Script:projectPropertiesFormatMapping = @(
     @{  
         Name       = "title";
         Expression = {
-            if ($showFullName -or $_.displayName.length -lt 20) {
-                $name = $_.displayName
-            } 
-            else {
-                $name = $_.displayName.Substring(0, 20) 
-            }
-
-            $name
-        } 
+            $_.displayName
+        }
+        Width = 50
     },
     @{
         Name       = "branch";
         Expression = {
             if (!$_.branch) { return }
             "$($_.branchDisplayName) ($($_.daysOld))" 
-        } 
+        }
+        Width = 15
     },
     @{
         Name       = "version";
@@ -29,6 +24,7 @@ $Script:projectPropertiesFormatMapping = @(
                 "$version$(if ($_.solutionPath) { 's' })"
             }
         }
+        Width = 10
     },
     @{
         Name       = "tags";
@@ -36,7 +32,22 @@ $Script:projectPropertiesFormatMapping = @(
             $res = ""
             $_.tags | sort | % { $res = "$res, $_" }
             $res.TrimStart(',').TrimStart(' ')
-        } 
+        }
+        Width = 15
+    },
+    @{
+        Name       = "nlbId";
+        Expression = {
+            $_.nlbId
+        }
+        Width = 5
+    },
+    @{
+        Name       = "id";
+        Expression = {
+            $_.id
+        }
+        Width = 4
     }
 )
 
@@ -50,10 +61,13 @@ function sfe-project-mapPropertiesFor {
     if ($display) {
         _mapProperties $props {
             param($mp)
-            @{
+            $p = @{
                 Expression = $mp.Expression
                 Label      = if ($mp.Label) { $mp.Label } else { $mp.Name }
+                Width = if ($mp.Width) { $mp.Width } else { 10 }
             }
+
+            $p
         }
     }
     
