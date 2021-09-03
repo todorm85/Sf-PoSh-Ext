@@ -159,12 +159,20 @@ function sfe-auth-basic {
     $config = sf-config-open -name "Authentication"
     $root = $config["authenticationConfig"]
     $relyingPartySettings = xml-getOrCreateElementPath -elementPath "//relyingPartySettings" -root $root
-    $relyingPartySettings.SetAttribute("enableBasicAuthenticationForBackendServices", $configVal)
-    sf-config-save -config $config
+    $existingValue = $relyingPartySettings.GetAttribute("enableBasicAuthenticationForBackendServices")
+    if (!$existingValue -or ($existingValue.ToLower() -ne $configVal.ToLower())) {
+        $relyingPartySettings.SetAttribute("enableBasicAuthenticationForBackendServices", $configVal)
+        sf-config-save -config $config
+        sf -resetPool
+        sf -ensureRunning
+        if (!$disable) {
+            sfe-seedUsers -mail "wcf@test.test" -roles "Administrators,BackendUsers"
+        }
+    }
 }
 
 function sfe-auth-basic-getHeaderValue {
-    Param([Parameter(Mandatory=$true)]$user, $pass = "admin@2")
+    Param($user = "wcf@test.test", $pass = "admin@2")
     $Text = "$($user):$pass"
     $Bytes = [System.Text.Encoding]::UTF8.GetBytes($Text)
     $EncodedText = [Convert]::ToBase64String($Bytes)

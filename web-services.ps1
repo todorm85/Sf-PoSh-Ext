@@ -1,12 +1,13 @@
 function sfe-wcf-invoke {
     param(
+        $path = "Sitefinity/Services/ModulesService/modules?skip=0&take=50",
+        $method = "GET",
         $body,
-        $method = "POST"
+        $contentType = "application/json"
     )
 
-    # todo: check if not enabled already
     sfe-auth-basic
-    $authHeaderVal = sfe-auth-basic-getHeaderValue -user "admin@test.test"
+    $authHeaderVal = sfe-auth-basic-getHeaderValue
     $headers = @{
         "Pragma"="no-cache";
         "Cache-Control"="no-cache";
@@ -15,5 +16,18 @@ function sfe-wcf-invoke {
     }
     
     $baseUrl = sf-iisSite-getUrl
-    Invoke-WebRequest -Uri "$baseUrl/Sitefinity/Services/SiteSync/SiteSyncService.svc/StartSync/" -Method $method -Headers $headers -ContentType "application/json" -Body $body
+    if ($method -eq "GET") {
+        Invoke-WebRequest -Uri "$baseUrl/$path" -Method $method -Headers $headers
+    } else {
+        Invoke-WebRequest -Uri "$baseUrl/$path" -Method $method -Headers $headers -Body $body -ContentType $contentType
+    }
+}
+
+function sfe-date-convertToJSFormat {
+    param (
+        [datetime]$date
+    )
+    
+    $timestamp = [Math]::Floor(1000 * (Get-Date $date -UFormat %s))
+    $timestamp
 }
