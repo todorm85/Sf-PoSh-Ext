@@ -53,7 +53,7 @@ $Script:projectPropertiesFormatMapping = @(
 
 function sfe-project-mapPropertiesFor {
     param (
-        [string[]]$props,
+        [object[]]$props,
         [switch]$display,
         [switch]$sort
     )
@@ -83,7 +83,7 @@ function sfe-project-mapPropertiesFor {
 
 function _mapProperties {
     param(
-        [string[]]$props,
+        [object[]]$props,
         [ScriptBlock]$mappingScript
     )
 

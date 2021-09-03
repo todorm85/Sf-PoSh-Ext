@@ -1,4 +1,4 @@
-$script:defaultProjectPropsToShow = @("branch", "id", "title")
+$script:defaultProjectPropsToShow = @("id", "title", "branch")
  
 $script:defaultProjectPropsToOrderBy = @("nlbId", "tags", "branch")
 
@@ -17,7 +17,7 @@ function sfe-project-remove {
 function sfe-project-select {
     param(
         [string[]]$tags,
-        [string[]]$additionalProps,
+        [object[]]$additionalProps,
         $orderProps,
         [Parameter(ValueFromPipeline)]
         [SfProject]

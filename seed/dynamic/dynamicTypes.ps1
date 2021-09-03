@@ -1,6 +1,6 @@
 $Global:SfEvents_OnAfterProjectSet += {
     # REMOVE DEPENDENCY TO TEST PROJECT UTILITIES
-    # sf-serverCode-deployDirectory "$PSScriptRoot\serverCode" "$($Global:sfe.appRelativeServerCodeRootPath)\dynamic"
+    sf-serverCode-deployDirectory "$PSScriptRoot\serverCode" "$($Global:sfe.appRelativeServerCodeRootPath)\dynamic"
 }
 
 function sfe-seedDynamicTypes {

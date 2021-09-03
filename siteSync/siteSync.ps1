@@ -1,5 +1,5 @@
 $Global:SfEvents_OnAfterProjectSet += {
-    # sf-serverCode-deployDirectory "$PSScriptRoot\serverCode" "$($Global:sfe.appRelativeServerCodeRootPath)\siteSync"
+    sf-serverCode-deployDirectory "$PSScriptRoot\serverCode" "$($Global:sfe.appRelativeServerCodeRootPath)\siteSync"
 }
 
 function sfe-sitesync-setupTarget {
@@ -90,8 +90,8 @@ function sfe-siteSync-uninstall {
     )
     
     process {
-        $project = Get-SfProjectFromPipeInput $project
-        Run-InProjectScope $project {
+        Run-InFunctionAcceptingProjectFromPipeline {
+            param($project)
             sf-serverCode-run "SitefinityWebApp.SfDev.SiteSync" -methodName "Uninstall" > $null
             # TODO remove all counterparts with relevant tags
             sf-tags-get | ? { $_ -like "sitesync-*" } | % { sf-tags-remove -tagName $_ }
