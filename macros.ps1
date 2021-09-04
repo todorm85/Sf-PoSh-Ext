@@ -50,9 +50,3 @@ function sfe {
 function psf {
     sfe -setFree    
 }
-
-function re {
-    sf -resetApp
-    sfe-auth-protocol-set -protocol Default
-    sf -ensureRunning
-}

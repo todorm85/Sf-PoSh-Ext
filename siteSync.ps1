@@ -1,26 +1,3 @@
-function sfe-sitesync-setupTarget {
-    # sf-serverCode-run "SitefinityWebApp.SfDev.SiteSync" -methodName "SetupDestination" > $null
-    _sitesync-installModule
-    sfe-seedUsers -mail "sync@test.test" -roles "Administrators,BackendUsers"
-
-    $jsDate = sfe-date-convertToJSFormat (Get-Date)
-    sfe-wcf-invoke -path "Sitefinity/Services/BasicSettings.svc/generic/00000000-0000-0000-0000-000000000000/?itemType=Telerik.Sitefinity.SiteSync.BasicSettings.SiteSyncSettingsContract" -method "PUT" -body "{`"Item`":{`"__type`":`"SiteSyncSettingsContract:#Telerik.Sitefinity.SiteSync.BasicSettings`",`"CurrentServer`":{`"IsEnabledAsTarget`":true,`"MaxServerKey`":100,`"MinServerKey`":0,`"ServerKey`":1},`"ReceivingServers`":[],`"LastModified`":`"\/Date($jsDate)\/`"}}"
-}
-
-function sfe-sitesync-setupSource {
-    param (
-        [Parameter(Mandatory)]
-        [ValidateNotNullOrEmpty()]
-        [string]
-        $targetUrl
-    )
-
-    # sf-serverCode-run "SitefinityWebApp.SfDev.SiteSync" -methodName "SetupSrc" -parameters $targetUrl > $null
-    _sitesync-installModule
-    $jsDate = sfe-date-convertToJSFormat (Get-Date)
-    sfe-wcf-invoke -path "Sitefinity/Services/BasicSettings.svc/generic/00000000-0000-0000-0000-000000000000/?itemType=Telerik.Sitefinity.SiteSync.BasicSettings.SiteSyncSettingsContract" -method "PUT" -body "{`"Item`":{`"__type`":`"SiteSyncSettingsContract:#Telerik.Sitefinity.SiteSync.BasicSettings`",`"CurrentServer`":{`"IsEnabledAsTarget`":false,`"MaxServerKey`":100,`"MinServerKey`":1,`"ServerKey`":1},`"ReceivingServers`":[{`"ServerId`":null,`"ServerAddress`":`"$targetUrl`",`"UserName`":`"sync@test.test`",`"Password`":`"admin@2`",`"Provider`":`"`",`"MicrositeId`":`"`",`"MicrositeName`":`"`",`"SourceMicrositeName`":`"`"}],`"LastModified`":`"\/Date($jsDate)\/`"}}"
-}
-
 function sfe-siteSync-install {
     Param(
         [switch]$skipSourceControlMapping,
@@ -43,7 +20,7 @@ function sfe-siteSync-install {
     
     # setup the target
     sf-project-rename -newName "$($sourceName)_trg"
-    sfe-sitesync-setupTarget
+    _sitesync-setupTarget
     $siteSyncSuffix = "sitesync-$([Guid]::NewGuid().ToString().Split('-')[0].Substring(0,3))"
     sf-tags-add -tagName $siteSyncSuffix
     sf-appStates-save -stateName $siteSyncSuffix
@@ -53,7 +30,7 @@ function sfe-siteSync-install {
     sf-project-setCurrent -newContext $source
     sf-project-rename -newName "$($sourceName)_src"
     sf-tags-add -tagName $siteSyncSuffix
-    sfe-sitesync-setupSource -targetUrl $targetUrl
+    _sitesync-setupSource -targetUrl $targetUrl
     sf-appStates-save -stateName $siteSyncSuffix
 }
 
@@ -79,6 +56,28 @@ function sfe-siteSync-uninstall {
             }
         }
     }
+}
+function _sitesync-setupTarget {
+    # sf-serverCode-run "SitefinityWebApp.SfDev.SiteSync" -methodName "SetupDestination" > $null
+    _sitesync-installModule
+    sfe-seedUsers -mail "sync@test.test" -roles "Administrators,BackendUsers"
+
+    $jsDate = sfe-date-convertToJSFormat (Get-Date)
+    sfe-wcf-invoke -path "Sitefinity/Services/BasicSettings.svc/generic/00000000-0000-0000-0000-000000000000/?itemType=Telerik.Sitefinity.SiteSync.BasicSettings.SiteSyncSettingsContract" -method "PUT" -body "{`"Item`":{`"__type`":`"SiteSyncSettingsContract:#Telerik.Sitefinity.SiteSync.BasicSettings`",`"CurrentServer`":{`"IsEnabledAsTarget`":true,`"MaxServerKey`":100,`"MinServerKey`":0,`"ServerKey`":1},`"ReceivingServers`":[],`"LastModified`":`"\/Date($jsDate)\/`"}}"
+}
+
+function _sitesync-setupSource {
+    param (
+        [Parameter(Mandatory)]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $targetUrl
+    )
+
+    # sf-serverCode-run "SitefinityWebApp.SfDev.SiteSync" -methodName "SetupSrc" -parameters $targetUrl > $null
+    _sitesync-installModule
+    $jsDate = sfe-date-convertToJSFormat (Get-Date)
+    sfe-wcf-invoke -path "Sitefinity/Services/BasicSettings.svc/generic/00000000-0000-0000-0000-000000000000/?itemType=Telerik.Sitefinity.SiteSync.BasicSettings.SiteSyncSettingsContract" -method "PUT" -body "{`"Item`":{`"__type`":`"SiteSyncSettingsContract:#Telerik.Sitefinity.SiteSync.BasicSettings`",`"CurrentServer`":{`"IsEnabledAsTarget`":false,`"MaxServerKey`":100,`"MinServerKey`":1,`"ServerKey`":1},`"ReceivingServers`":[{`"ServerId`":null,`"ServerAddress`":`"$targetUrl`",`"UserName`":`"sync@test.test`",`"Password`":`"admin@2`",`"Provider`":`"`",`"MicrositeId`":`"`",`"MicrositeName`":`"`",`"SourceMicrositeName`":`"`"}],`"LastModified`":`"\/Date($jsDate)\/`"}}"
 }
 
 function _sitesync-installModule {

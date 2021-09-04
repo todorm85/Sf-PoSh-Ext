@@ -98,7 +98,7 @@ function sfe-localization-setDefaultCulture {
     sf-config-save $config
 }
 
-function sfe-localization-addSiteCultures {
+function sfe-localization-setSiteCultures {
     param (
         [string[]]$cultures,
         [int]$siteIndex = 0
