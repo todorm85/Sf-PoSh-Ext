@@ -3,14 +3,14 @@ $script:defaultProjectPropsToShow = @("id", "title", "branch")
 $script:defaultProjectPropsToOrderBy = @("nlbId", "tags", "branch")
 
 function sfe-project-remove {
-    $p = sf-project-get
+    $p = sf-PSproject-get
     if (!$p) {
         throw "No project."
     }
 
     $result = Read-Host "Are you sure you want to remove the current project $($p.displayName)? y/n: ";
     if ($result -eq "y") {
-        sf-project-remove
+        sf-PSproject-remove
     }
 }
 
@@ -41,10 +41,10 @@ function sfe-project-select {
             $orderProps = $script:defaultProjectPropsToOrderBy
         }
 
-        $props = sfe-project-mapPropertiesFor -props $props -display
-        $orderProps = sfe-project-mapPropertiesFor -props $orderProps -sort
+        $props = _project-mapPropertiesFor -props $props -display
+        $orderProps = _project-mapPropertiesFor -props $orderProps -sort
         
-        $projects | sf-project-select -tagsFilter $tags -propsToShow $props -propsToSort $orderProps
+        $projects | sf-PSproject-select -tagsFilter $tags -propsToShow $props -propsToSort $orderProps
     }
 }
 
@@ -56,7 +56,7 @@ function sfe-project-getAll {
         $tags
     )
     
-    sf-project-get -all | sf-tags-filter -tags $tags
+    sf-PSproject-get -all | sf-PSproject-tags-filter -tags $tags
 }
 
 Register-ArgumentCompleter -CommandName sfe-project-getAll -ParameterName tags -ScriptBlock $Global:SfTagFilterCompleter
@@ -82,7 +82,7 @@ function sfe-project-formatTable {
         if ($additionalProps) {
             $props = $additionalProps + $props
         }
-        $allProjects | ft -Property (sfe-project-mapPropertiesFor $props -display) -Wrap
+        $allProjects | ft -Property (_project-mapPropertiesFor $props -display) -Wrap
     }
 }
 

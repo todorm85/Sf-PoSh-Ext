@@ -1,9 +1,5 @@
-function sfe {
+function psf {
     param (
-        [Parameter(ParameterSetName = "recreate")][switch]$fullReset,
-        [Parameter(ParameterSetName = "startNew")][switch]$resetSourceCode,
-        [Parameter(ParameterSetName = "sync")][switch]$syncSourceCode,
-        [Parameter(ParameterSetName = "setFree")][switch]$setFree,
         [Parameter(ValueFromPipeline)]
         [SfProject]$project
     )
@@ -11,42 +7,17 @@ function sfe {
     Process {
         Run-InFunctionAcceptingProjectFromPipeline {
             param($project)
-            if ($syncSourceCode) {
-                sf-appPrecompiledTemplates-remove
-                sf -getLatestChanges -stopWhenNoNewChanges -build
-                sf -ensureRunning
-                return
-            }
-
-            if ($fullReset) {
-                sf -getLatestChanges -forceGetChanges -discardExistingChanges -cleanSolution -build -resetApp -precompile -saveInitialState
-                return
-            }
-
-            if ($resetSourceCodeReset) {
-                sf-appPrecompiledTemplates-remove
-                sf -getLatestChanges -discardExistingChanges -stopWhenNoNewChanges -build
-                sf -ensureRunning
-                return
-            }
-
-            if ($setFree) {
-                $excludeTags = @("official", "archive")
-                sf-tags-get | ? {$excludeTags -notcontains $_} | sf-tags-remove > $null
-                if ($project.branch) {
-                    sf-project-rename -newName "free"
-                    if (sf-sourceControl-hasPendingChanges) {
-                        sf-sourceControl-undoPendingChanges
-                    }
+            $excludeTags = @("official", "archive")
+            sf-PSproject-tags-get | ? { $excludeTags -notcontains $_ } | sf-PSproject-tags-remove > $null
+            if ($project.branch) {
+                sf-PSproject-rename -newName "free"
+                if (sf-source-hasPendingChanges) {
+                    sf-source-undoPendingChanges
                 }
-                else {
-                    sf-project-rename -newName "free_"
-                }
+            }
+            else {
+                sf-PSproject-rename -newName "free_"
             }
         }
     }
-}
-
-function psf {
-    sfe -setFree    
 }

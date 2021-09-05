@@ -51,7 +51,7 @@ $Script:projectPropertiesFormatMapping = @(
     }
 )
 
-function sfe-project-mapPropertiesFor {
+function _project-mapPropertiesFor {
     param (
         [object[]]$props,
         [switch]$display,

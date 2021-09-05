@@ -4,7 +4,7 @@ $GLOBAL:sfe = [PSCustomObject]@{ }
 Add-Member -InputObject $GLOBAL:sfe -MemberType NoteProperty -Name appRelativeServerCodeRootPath -Value "App_Code\sf-posh-extensions"
 
 $Global:SfEvents_OnAfterProjectSet += {
-    $p = sf-project-get
+    $p = sf-PSproject-get
     $oldDestinationRoot = "$($p.webAppPath)\App_Code\sf-dev-extensions"
     if ((Test-Path $oldDestinationRoot)) {
         Remove-Item $oldDestinationRoot -Force -Recurse
