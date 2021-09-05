@@ -57,6 +57,7 @@ function sfe-siteSync-uninstall {
         }
     }
 }
+
 function _sitesync-setupTarget {
     # sf-serverCode-run "SitefinityWebApp.SfDev.SiteSync" -methodName "SetupDestination" > $null
     _sitesync-installModule
